@@ -1,5 +1,6 @@
 package com.commandshield;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command; 
@@ -7,9 +8,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class CommandShield extends JavaPlugin implements Listener {
 
@@ -126,9 +132,9 @@ public class CommandShield extends JavaPlugin implements Listener {
             if (args.length == 1) {
                 return List.of("add", "remove", "list", "help");
             }
-            if (args.length == 2) {
-                return new ArrayList<>();
-            }
+            if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+                return new ArrayList<>(blockedCommands); // Autocomplete from blocked commands
+            }      
         }
         return null;
     }
