@@ -7,80 +7,67 @@ on:
 permissions:
   contents: write
 
+  
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up JDK 22
-        uses: actions/setup-java@v3
-        with:
-          java-version: '22'
-          distribution: 'temurin'
+    - name: Set up JDK 22
+      uses: actions/setup-java@v3
+      with:
+        java-version: '22'
+        distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      
-      - name: Build with Maven
-        run: mvn clean package
+    - name: Cache Maven dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
 
-      - name: Upload artifact
-        id: upload-artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: minecraft-plugin
-          path: target/*.jar
+    - name: Build with Maven
+      run: mvn clean package
+
+    - name: Upload artifact
+      id: upload-artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: minecraft-plugin
+        path: target/*.jar
 
   release:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: minecraft-plugin
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: minecraft-plugin
 
-      - name: Debug artifact location
-        run: ls -R .
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        body: |
+          Automated release for ${{ github.ref_name }}.
+        draft: false
+        prerelease: false
 
-      - name: Create or Update Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          RELEASE_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-            https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r '.id')
-          if [ "$RELEASE_ID" == "null" ]; then
-            echo "Creating release..."
-            RESPONSE=$(curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "{\"tag_name\": \"${{ github.ref_name }}\", \"name\": \"Release ${{ github.ref_name }}\", \"body\": \"Automated release for ${{ github.ref_name }}.\"}" \
-              https://api.github.com/repos/${{ github.repository }}/releases)
-            RELEASE_ID=$(echo $RESPONSE | jq -r '.id')
-            echo "Release created with ID: $RELEASE_ID"
-          else
-            echo "Updating release..."
-            curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
-              -H "Content-Type: application/json" \
-              -d "{\"name\": \"Release ${{ github.ref_name }}\", \"body\": \"Updated release for ${{ github.ref_name }}.\"}" \
-              https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID
-          fi
-
-      - name: Upload JAR to Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=commandshield-${{ github.ref_name }}.jar
-          asset_path: ./commandshield-1.0-SNAPSHOT.jar
-          asset_name: commandshield-${{ github.ref_name }}.jar
-          asset_content_type: application/java-archive
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+    - name: Upload JAR to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: target/*.jar
+        asset_name: minecraft-plugin-${{ github.ref_name }}.jar
+        asset_content_type: application/java-archive
