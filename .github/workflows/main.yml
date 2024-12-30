@@ -32,23 +32,40 @@ jobs:
     - name: Build with Maven
       run: mvn clean package
 
-    - name: Verify JAR file location
+    - name: Verify JAR file exists
       run: |
-        echo "Checking for JAR file at target/"
-        ls -lh target/  # List files in the target directory to confirm the JAR file exists
+        echo "Listing files in target/ directory..."
+        ls -lh target/
+        # Ensure the JAR file exists before moving to the next step
+        if [ ! -f target/commandshield-1.0-SNAPSHOT.jar ]; then
+          echo "Error: JAR file not found!"
+          exit 1
+        fi
+
+    - name: Upload artifact
+      id: upload-artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: minecraft-plugin
+        path: target/commandshield-1.0-SNAPSHOT.jar  # Specify exact file path for upload
 
   release:
     needs: build
     runs-on: ubuntu-latest
-     
-     
 
     steps:
-    - name: Check downloaded artifact
-      run: ls -lh ./
-      
     - name: Checkout repository (again for release step)
       uses: actions/checkout@v4
+
+    - name: Download artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: minecraft-plugin
+
+    - name: List files in the current directory after download
+      run: |
+        echo "Listing files in the current directory after artifact download..."
+        ls -lh
 
     - name: Create GitHub Release and upload artifact
       uses: softprops/action-gh-release@v2
