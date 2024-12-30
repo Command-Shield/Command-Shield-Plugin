@@ -50,7 +50,7 @@ jobs:
         name: minecraft-plugin
 
     - name: Checkout repository (again for release step)
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Create GitHub Release and upload artifact
       uses: softprops/action-gh-release@v2
