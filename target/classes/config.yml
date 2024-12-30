@@ -1,0 +1,4 @@
+blocked-commands:
+  - /gamerule randomtickspeed
+  - /kill
+  - /op
