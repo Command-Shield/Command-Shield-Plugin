@@ -49,6 +49,9 @@ jobs:
       with:
         name: minecraft-plugin
 
+    - name: Debug artifact location
+      run: ls -R .
+
     - name: Create or Update Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +78,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=minecraft-plugin-${{ github.ref_name }}.jar
-        asset_path: target/*.jar
-        asset_name: minecraft-plugin-${{ github.ref_name }}.jar
+        asset_path: minecraft-plugin
+        asset_name: ${{ github.ref_name }}.jar
         asset_content_type: application/java-archive
-
