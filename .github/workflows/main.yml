@@ -13,16 +13,16 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up JDK 22
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '22'
         distribution: 'temurin'
 
     - name: Cache Maven dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -34,7 +34,7 @@ jobs:
 
     - name: Upload artifact
       id: upload-artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: minecraft-plugin
         path: target/*.jar
@@ -45,7 +45,7 @@ jobs:
 
     steps:
     - name: Download artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: minecraft-plugin
 
@@ -55,7 +55,7 @@ jobs:
     - name: Create GitHub Release and upload artifact
       uses: softprops/action-gh-release@v2
       with:
-        files: ./commandshield-1.0-SNAPSHOT.jar
+        files: minecraft-plugin
         tag_name: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
         body: |
