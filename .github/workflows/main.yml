@@ -78,6 +78,6 @@ jobs:
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
        upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=commandshield-${{ github.ref_name }}.jar
-       asset_path: ./minecraft-plugin/commandshield-1.0-SNAPSHOT.jar
+       asset_path: ./commandshield-1.0-SNAPSHOT.jar
        asset_name: commandshield-${{ github.ref_name }}.jar
        asset_content_type: application/java-archive
