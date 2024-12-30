@@ -40,8 +40,13 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
+     
+     
 
     steps:
+    - name: Check downloaded artifact
+      run: ls -lh target/
+      
     - name: Checkout repository (again for release step)
       uses: actions/checkout@v4
 
