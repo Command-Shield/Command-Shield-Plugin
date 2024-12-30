@@ -7,7 +7,6 @@ on:
 permissions:
   contents: write
 
-  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,24 +49,33 @@ jobs:
       with:
         name: minecraft-plugin
 
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
+    - name: Create or Update Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.ref_name }}
-        body: |
-          Automated release for ${{ github.ref_name }}.
-        draft: false
-        prerelease: false
+      run: |
+        RELEASE_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+          https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} | jq -r '.id')
+        if [ "$RELEASE_ID" == "null" ]; then
+          echo "Creating release..."
+          curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\": \"${{ github.ref_name }}\", \"name\": \"Release ${{ github.ref_name }}\", \"body\": \"Automated release for ${{ github.ref_name }}.\"}" \
+            https://api.github.com/repos/${{ github.repository }}/releases
+        else
+          echo "Updating release..."
+          curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"name\": \"Release ${{ github.ref_name }}\", \"body\": \"Updated release for ${{ github.ref_name }}.\"}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID
+        fi
 
     - name: Upload JAR to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=minecraft-plugin-${{ github.ref_name }}.jar
         asset_path: target/*.jar
         asset_name: minecraft-plugin-${{ github.ref_name }}.jar
         asset_content_type: application/java-archive
+
