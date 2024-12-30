@@ -55,7 +55,7 @@ jobs:
     - name: Create GitHub Release and upload artifact
       uses: softprops/action-gh-release@v2
       with:
-        files: target/*.jar
+        files: ./commandshield-1.0-SNAPSHOT.jar
         tag_name: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
         body: |
