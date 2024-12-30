@@ -68,4 +68,3 @@ jobs:
         asset_path: target/*.jar
         asset_name: minecraft-plugin-${{ github.ref_name }}.jar
         asset_content_type: application/java-archive
-
