@@ -32,6 +32,11 @@ jobs:
     - name: Build with Maven
       run: mvn clean package
 
+    - name: Verify JAR file location
+      run: |
+        echo "Checking for JAR file at target/"
+        ls -lh target/  # List files in the target directory to confirm the JAR file exists
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -43,7 +48,7 @@ jobs:
     - name: Create GitHub Release and upload artifact
       uses: softprops/action-gh-release@v2
       with:
-        files: target/commandshield-1.0-SNAPSHOT.jar  # Point to your JAR file directly
+        files: target/commandshield-1.0-SNAPSHOT.jar  # Correct path to your JAR file
         tag_name: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
         body: |
@@ -51,3 +56,4 @@ jobs:
         draft: false
         prerelease: false
         token: ${{ secrets.GITHUB_TOKEN }}
+
