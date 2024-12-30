@@ -69,5 +69,5 @@ jobs:
       with:
         upload_url: https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=commandshield-${{ github.ref_name }}.jar
         asset_path: target/*.jar
-        asset_name: minecraft-plugin-${{ github.ref_name }}.jar
+        asset_name: ./commandshield-1.0-SNAPSHOT.jar
         asset_content_type: application/java-archive
