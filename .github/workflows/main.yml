@@ -45,7 +45,7 @@ jobs:
 
     steps:
     - name: Check downloaded artifact
-      run: ls -lh target/
+      run: ls -lh ./
       
     - name: Checkout repository (again for release step)
       uses: actions/checkout@v4
