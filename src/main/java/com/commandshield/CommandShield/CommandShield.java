@@ -42,17 +42,11 @@ public class CommandShield extends JavaPlugin implements Listener {
       //  String[] parts = command.split(" ");
         String baseCommand = command;
 
-        // Debugging output
-        event.getPlayer().sendMessage(ChatColor.YELLOW + "Command entered: " + baseCommand);
-
         if (blockedCommands.stream().anyMatch(blocked -> 
                 baseCommand.contains(blocked) || baseCommand.endsWith(":" + blocked))) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "This command is blocked on this server.");
-        } else {
-            // Debugging output
-            event.getPlayer().sendMessage(ChatColor.GREEN + "Command is allowed.");
-        }
+        } 
     }
 
     
