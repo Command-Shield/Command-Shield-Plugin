@@ -37,7 +37,7 @@ jobs:
         echo "Listing files in target/ directory..."
         ls -lh target/
         # Ensure the JAR file exists before moving to the next step
-        if [ ! -f target/commandshield-1.1-SNAPSHOT.jar ]; then
+        if [ ! -f target/commandshield-${{ github.ref_name }}-SNAPSHOT.jar ]; then
           echo "Error: JAR file not found!"
           exit 1
         fi
@@ -47,7 +47,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: minecraft-plugin
-        path: target/commandshield-1.1-SNAPSHOT.jar  # Specify exact file path for upload
+        path: target/commandshield-${{ github.ref_name }}-SNAPSHOT.jar  # Specify exact file path for upload
 
   release:
     needs: build
@@ -70,7 +70,7 @@ jobs:
     - name: Create GitHub Release and upload artifact
       uses: softprops/action-gh-release@v2
       with:
-        files: ./commandshield-1.1-SNAPSHOT.jar  # Correct path to your JAR file
+        files: ./commandshield-${{ github.ref_name }}-SNAPSHOT.jar  # Correct path to your JAR file
         tag_name: ${{ github.ref_name }}
         name:  ${{ github.ref_name }}
         body: |

@@ -1,5 +1,5 @@
 name: CommandShield
-version: 1.1
+version: 1.1.1
 main: com.commandshield.CommandShield
 api-version: 1.20
 description: Blocks the /gamerule randomtickspeed command
@@ -8,5 +8,5 @@ author: ItsJustNickDev
 commands:
   cshield:
     description: Manage blocked commands.
-    usage: /cshield <add|remove|list|help> <command>
+    usage: /cshield <add|remove|list|help|reload> <command>
     aliases: [cshield]
