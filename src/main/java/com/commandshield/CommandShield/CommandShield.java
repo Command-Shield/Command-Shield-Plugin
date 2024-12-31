@@ -60,7 +60,7 @@ public class CommandShield extends JavaPlugin implements Listener {
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /cshield <help|list|add|remove> <command>");
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /cshield <help|list|add|remove|reload> <command>");
             return false;
         }
 
@@ -80,8 +80,11 @@ public class CommandShield extends JavaPlugin implements Listener {
                     return false;
                 }
                 return handleModifyCommand(sender, action, args[1].toLowerCase());
+            case "reload":
+                reloadConfig(sender);
+                return true;
             default:
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /cshield <add|remove|list|help> <command>");
+                sender.sendMessage(ChatColor.YELLOW + "Usage: /cshield <add|remove|list|help|reload> <command>");
                 return false;
         }
     }
@@ -130,6 +133,12 @@ public class CommandShield extends JavaPlugin implements Listener {
             }
         }
         return true;
+    }
+
+    private void reloadConfig(CommandSender sender) {
+        reloadConfig();
+        loadBlockedCommands();
+        sender.sendMessage(ChatColor.GREEN + "Configuration reloaded successfully.");
     }
 
     @Override
