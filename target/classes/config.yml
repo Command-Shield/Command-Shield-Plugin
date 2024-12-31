@@ -1,4 +1,4 @@
 blocked-commands:
-  - /gamerule randomtickspeed
-  - /kill
-  - /op
+  - gamerule randomtickspeed
+  - kill
+  - op
