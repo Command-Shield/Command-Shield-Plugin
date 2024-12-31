@@ -39,11 +39,10 @@ public class CommandShield extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         String command = event.getMessage().toLowerCase(); // Full command entered by the player
-      //  String[] parts = command.split(" ");
         String baseCommand = command;
 
         if (blockedCommands.stream().anyMatch(blocked -> 
-                baseCommand.contains(blocked) || baseCommand.endsWith(":" + blocked))) {
+                baseCommand.startsWith("/" + blocked) || baseCommand.endsWith(":" + blocked))) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "This command is blocked on this server.");
         } 
@@ -95,6 +94,7 @@ public class CommandShield extends JavaPlugin implements Listener {
         sender.sendMessage(ChatColor.AQUA + "/cshield remove <command> - " + ChatColor.WHITE + "Remove a command from the blocked list.");
         sender.sendMessage(ChatColor.AQUA + "/cshield list - " + ChatColor.WHITE + "List all blocked commands.");
         sender.sendMessage(ChatColor.AQUA + "/cshield help - " + ChatColor.WHITE + "Show this help menu.");
+        sender.sendMessage(ChatColor.AQUA + "/cshield reload - " + ChatColor.WHITE + "Reload the configuration.");
     }
 
     private void listBlockedCommands(CommandSender sender) {
