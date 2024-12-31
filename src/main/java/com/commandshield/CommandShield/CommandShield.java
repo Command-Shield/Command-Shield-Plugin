@@ -136,6 +136,7 @@ public class CommandShield extends JavaPlugin implements Listener {
     }
 
     private void reloadConfig(CommandSender sender) {
+        saveDefaultConfig();
         reloadConfig();
         loadBlockedCommands();
         sender.sendMessage(ChatColor.GREEN + "Configuration reloaded successfully.");
