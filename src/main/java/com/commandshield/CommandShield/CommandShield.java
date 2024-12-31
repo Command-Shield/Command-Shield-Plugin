@@ -146,7 +146,7 @@ public class CommandShield extends JavaPlugin implements Listener {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (command.getName().equalsIgnoreCase("cshield")) {
             if (args.length == 1) {
-                return List.of("add", "remove", "list", "help");
+                return List.of("add", "remove", "list", "help", "reload");
             }
             if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
                 return new ArrayList<>(blockedCommands); // Autocomplete from blocked commands
