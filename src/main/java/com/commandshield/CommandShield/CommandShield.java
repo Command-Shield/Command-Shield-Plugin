@@ -115,6 +115,7 @@ public class CommandShield extends JavaPlugin implements Listener {
         }
 
         if (action.equals("add")) {
+            commandToModify = commandToModify.replaceFirst("/", "");
             if (!blockedCommands.contains(commandToModify)) {
                 blockedCommands.add(commandToModify);
                 getConfig().set("blocked-commands", blockedCommands);
@@ -124,6 +125,7 @@ public class CommandShield extends JavaPlugin implements Listener {
                 sender.sendMessage(ChatColor.RED + "This command is already blocked.");
             }
         } else if (action.equals("remove")) {
+            commandToModify = commandToModify.replaceFirst("/", "");
             if (blockedCommands.remove(commandToModify)) {
                 getConfig().set("blocked-commands", blockedCommands);
                 saveConfig();
